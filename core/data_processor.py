@@ -19,7 +19,9 @@ class DataProcessor:
         self.design_point_numbers = []  # [point_number, ...]
         self.measured_points = []  # [(x, y), ...]
         self.measured_point_numbers = []  # [point_number, ...]
+        self.measured_elevations = []  # [elevation, ...]  # 新增存储实测高程
         self.matched_points = []  # [(design_point, measured_point), ...]
+        self.matched_elevations = []  # [elevation, ...]  # 新增存储匹配点的高程
         self.deviations = []  # 偏差值列表
         self.arrow_scale = 0.5  # 默认箭头比例
         
@@ -44,7 +46,9 @@ class DataProcessor:
             else:
                 # 实测数据需要交换XY
                 points = list(zip(df['x'], df['y']))  # X作为Y，Y作为X
-                logger.info("加载实测数据：交换XY坐标")
+                # 加载高程数据
+                elevations = df['elevation'].tolist()
+                logger.info("加载实测数据：交换XY坐标并加载高程")
             
             point_numbers = df['point_number'].tolist()
             
@@ -54,6 +58,7 @@ class DataProcessor:
             else:
                 self.measured_points = points
                 self.measured_point_numbers = point_numbers
+                self.measured_elevations = elevations  # 存储高程数据
             
             logger.info(f"成功加载CASS数据，共{len(points)}个点")
             if len(points) > 0:
@@ -61,7 +66,7 @@ class DataProcessor:
                 if is_design:
                     logger.info(f"第一个设计点坐标：X={first_point[0]:.3f}, Y={first_point[1]:.3f}")
                 else:
-                    logger.info(f"第一个实测点坐标：X={first_point[0]:.3f}, Y={first_point[1]:.3f}")
+                    logger.info(f"第一个实测点坐标：X={first_point[0]:.3f}, Y={first_point[1]:.3f}, 高程={elevations[0]:.3f}")
             
             return True, ""
         except Exception as e:
@@ -109,6 +114,8 @@ class DataProcessor:
             # 创建点号到坐标的映射
             design_dict = dict(zip(self.design_point_numbers, self.design_points))
             measured_dict = dict(zip(self.measured_point_numbers, self.measured_points))
+            # 创建点号到高程的映射
+            elevation_dict = dict(zip(self.measured_point_numbers, self.measured_elevations))
             
             # 找到共同的点号
             common_numbers = set(self.design_point_numbers) & set(self.measured_point_numbers)
@@ -120,6 +127,12 @@ class DataProcessor:
             # 按点号匹配点位
             self.matched_points = [
                 (design_dict[num], measured_dict[num])
+                for num in common_numbers
+            ]
+            
+            # 匹配高程
+            self.matched_elevations = [
+                elevation_dict[num]
                 for num in common_numbers
             ]
             
@@ -146,6 +159,8 @@ class DataProcessor:
                 
             # 直接按顺序匹配
             self.matched_points = list(zip(self.design_points, self.measured_points))
+            # 高程直接使用实测高程
+            self.matched_elevations = self.measured_elevations.copy()
             
             logger.info(f"按顺序匹配成功，共匹配{len(self.matched_points)}个点")
             return True
@@ -168,6 +183,7 @@ class DataProcessor:
                 return False
                 
             matched = []
+            matched_elevs = []  # 存储对应的高程值
             used_measured = set()
             
             # 对每个设计点位
@@ -193,12 +209,14 @@ class DataProcessor:
                         
                 if best_match is not None:
                     matched.append((design_point, best_match))
+                    matched_elevs.append(self.measured_elevations[best_index])  # 添加对应的高程
                     used_measured.add(best_index)
                     logger.debug(f"点位{i+1}匹配成功，距离={min_dist:.2f}")
                 else:
                     logger.warning(f"点位{i+1}未找到匹配点")
                     
             self.matched_points = matched
+            self.matched_elevations = matched_elevs
             
             if matched:
                 logger.info(f"按距离匹配成功，共匹配{len(matched)}个点")
@@ -217,6 +235,14 @@ class DataProcessor:
             List[Tuple[Tuple[float, float], Tuple[float, float]]]: 匹配后的点位列表
         """
         return self.matched_points
+        
+    def get_matched_elevations(self) -> List[float]:
+        """获取匹配后的高程列表
+        
+        Returns:
+            List[float]: 匹配后的高程列表
+        """
+        return self.matched_elevations
         
     def calculate_statistics(self) -> Optional[Dict]:
         """计算偏差统计信息

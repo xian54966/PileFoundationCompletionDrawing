@@ -119,7 +119,7 @@ class Visualizer:
     def draw_deviation(self, matched_points: List[Tuple[Tuple[float, float], Tuple[float, float]]], 
                       pile_diameter: float, axis_scale: float, arrow_scale: float,
                       main_text_scale: float = 0.2, axis_label_scale: float = 0.15,
-                      angle_text_scale: float = 0.5) -> bool:
+                      angle_text_scale: float = 0.5, elevations: List[float] = None) -> bool:
         """绘制偏差数据
         
         Args:
@@ -130,6 +130,7 @@ class Visualizer:
             main_text_scale: 主文本比例
             axis_label_scale: 坐标轴标签比例
             angle_text_scale: 角度文本比例
+            elevations: 高程值列表
             
         Returns:
             bool: 是否成功
@@ -175,7 +176,7 @@ class Visualizer:
             
             success_count = 0
             # 绘制每个点的偏差
-            for design_point, measured_point in matched_points:
+            for idx, (design_point, measured_point) in enumerate(matched_points):
                 try:
                     # 计算偏差
                     dx = float(measured_point[0]) - float(design_point[0])  # 确保是浮点数
@@ -183,6 +184,11 @@ class Visualizer:
                     # 计算偏差并转换为毫米（坐标值可能是以米为单位）
                     deviation = math.sqrt(dx**2 + dy**2) * 1000  # 转换为毫米
                     deviation_mm = deviation  # 毫米单位
+                    
+                    # 获取高程值（如果有）
+                    elevation = None
+                    if elevations and idx < len(elevations):
+                        elevation = elevations[idx]
                     
                     # 计算偏差角度（与X轴的夹角，逆时针为正）
                     # 使用数学坐标系，y轴向上为正，角度从x轴正向开始逆时针为正
@@ -353,6 +359,24 @@ class Visualizer:
                         deviation_text_size
                     )
                     text.Color = 0  # 黑色
+                    
+                    # 绘制高程值（如果有）
+                    if elevation is not None:
+                        # 将高程文本放在圆内底部的位置，与预览一致
+                        elev_offset_y = pile_diameter * 1.2  # 偏移到圆内下方位置，与预览保持一致
+                        elev_point = to_vba_point(
+                            design_point[0],
+                            design_point[1] + elev_offset_y
+                        )
+                        elev_text_size = pile_diameter * self.style['main_text_scale']  # 使用与主文本相同的比例
+                        elev_text = self.modelspace.AddText(
+                            f"H={elevation:.3f}",
+                            elev_point,
+                            elev_text_size
+                        )
+                        elev_text.Color = 4  # 青色
+                        elev_text.Alignment = 1  # 中心对齐
+                        elev_text.TextAlignmentPoint = elev_point  # 设置对齐点
                     
                     success_count += 1
                 except Exception as e:
@@ -649,6 +673,9 @@ class PreviewScene(QGraphicsScene):
             center_x = view_width / 2
             center_y = view_height / 2
             
+            # 设置基准文本大小（使用固定值）
+            base_text_size = 20  # 基准大小设为20pt
+            
             # 绘制桩基圆
             radius = pile_diameter / 2 * scale
             circle = self.addEllipse(
@@ -658,6 +685,25 @@ class PreviewScene(QGraphicsScene):
                 radius * 2,
                 QPen(Qt.GlobalColor.blue),
                 QBrush(Qt.GlobalColor.transparent)
+            )
+            
+            # 绘制高程值（示例）
+            # 将高程文本放在圆内底部的位置
+            elev_offset_y = radius * 1.2  # 与实际绘制位置保持一致 (pile_diameter * 0.6 对应 radius * 0.6)
+            elev_text_size = int(base_text_size * main_text_scale)  # 使用与主文本相同的比例
+            
+            elev_text = self.addText("H=123.456")
+            elev_text.setDefaultTextColor(QColor(0, 170, 170))  # 青色
+            font = QFont()
+            font.setPointSize(elev_text_size)
+            elev_text.setFont(font)
+            
+            # 计算文本位置使其居中
+            elev_text_width = elev_text.boundingRect().width()
+            elev_text_height = elev_text.boundingRect().height()
+            elev_text.setPos(
+                center_x - elev_text_width/2,
+                center_y + elev_offset_y - elev_text_height/2
             )
             
             # 绘制坐标轴
@@ -768,7 +814,7 @@ class PreviewScene(QGraphicsScene):
             
             # 将角度文本放置在圆弧中间偏上位置
             mid_angle_rad = math.radians(22.5)  # 圆弧中点的角度（45/2度）
-            text_radius = arc_radius * 0.6  # 文本放在圆弧内侧偏上位置
+            text_radius = arc_radius * 1.2  # 文本放在圆弧内侧偏上位置
             text_x = center_x + text_radius * math.cos(mid_angle_rad)
             text_y = center_y - text_radius * math.sin(mid_angle_rad)  # 注意这里是减号，因为Qt坐标系Y轴向下
             

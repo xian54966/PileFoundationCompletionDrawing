@@ -572,6 +572,13 @@ class MainWindow(QMainWindow):
                 
             # 绘制偏差
             matched_points = self.data_processor.get_matched_points()
+            # 获取高程信息
+            matched_elevations = self.data_processor.get_matched_elevations()
+            
+            self.log_message(f"正在绘制偏差，共 {len(matched_points)} 个点...")
+            if matched_elevations:
+                self.log_message(f"包含高程信息，将绘制桩基标高")
+            
             if self.visualizer.draw_deviation(
                 matched_points, 
                 pile_diameter, 
@@ -579,15 +586,18 @@ class MainWindow(QMainWindow):
                 arrow_scale,
                 main_text_scale,
                 axis_label_scale,
-                angle_text_scale
+                angle_text_scale,
+                elevations=matched_elevations  # 传递高程信息
             ):
                 self.log_message("偏差绘制完成")
+                QMessageBox.information(self, "完成", "偏差数据绘制完成！")
             else:
                 self.log_message("偏差绘制失败", "ERROR")
-                
+                QMessageBox.critical(self, "错误", "偏差数据绘制失败！")
         except Exception as e:
-            logger.error(f"绘制偏差失败: {e}", exc_info=True)
-            QMessageBox.critical(self, "错误", f"绘制偏差失败：{str(e)}")
+            error_msg = f"绘制偏差失败：{str(e)}"
+            self.log_message(error_msg, "ERROR")
+            QMessageBox.critical(self, "错误", error_msg)
             
     def statistics_deviation(self):
         """统计偏差数据"""
