@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>936</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_9">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QFrame" name="frame">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="file_group">
+          <property name="title">
+           <string>1、打开文件</string>
+          </property>
+          <layout class="QGridLayout" name="file_layout">
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="file_path_layout">
+             <item>
+              <widget class="QLabel" name="cad_file_label">
+               <property name="text">
+                <string>CAD文件路径：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="cad_file_path"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="browse_cad_btn">
+               <property name="text">
+                <string>浏览</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="open_cad_btn">
+               <property name="text">
+                <string>打开</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="extract_points_group">
+          <property name="title">
+           <string>2、提取设计点位：</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="methods_layout">
+             <item>
+              <widget class="QGroupBox" name="method_one_group">
+               <property name="title">
+                <string>方案一（遍历指定图层上所有圆）：</string>
+               </property>
+               <layout class="QGridLayout" name="method_one_layout">
+                <item row="0" column="0">
+                 <layout class="QHBoxLayout" name="layer_select_layout">
+                  <item>
+                   <widget class="QLabel" name="layer_label">
+                    <property name="text">
+                     <string>图层：</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="layer_combo"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="refresh_layer_btn">
+                    <property name="text">
+                     <string>刷新图层</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="extract_cass_btn">
+                    <property name="text">
+                     <string>提取为Cass格式</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="method_two_group">
+               <property name="title">
+                <string>方案二（指定对象圆）：</string>
+               </property>
+               <layout class="QGridLayout" name="method_two_layout">
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="select_circle_btn">
+                  <property name="text">
+                   <string>手动选择桩基圆导出CASS</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>桩基圆个数：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="circle_count_edit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>桩基圆直径：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="circle_diameter_edit"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QGroupBox" name="measured_data_group">
+          <property name="title">
+           <string>3、加载数据</string>
+          </property>
+          <layout class="QGridLayout" name="measured_data_layout">
+           <item row="0" column="0">
+            <layout class="QVBoxLayout" name="data_format_layout">
+             <item>
+              <widget class="QLabel" name="data_format_label">
+               <property name="font">
+                <font>
+                 <pointsize>7</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>要求：文本格式，以英文逗号分隔，必须包含点号、东、北坐标三项。</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="measured_path_layout">
+               <item>
+                <widget class="QLabel" name="measured_path_label">
+                 <property name="text">
+                  <string>实测数据路径：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="measured_data_path"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="open_measured_btn">
+                 <property name="text">
+                  <string>选择</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="format_select_layout">
+               <item>
+                <widget class="QRadioButton" name="cass_format_radio">
+                 <property name="text">
+                  <string>Cass格式</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="custom_format_radio">
+                 <property name="text">
+                  <string>自定义</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="column_format_edit">
+                 <property name="font">
+                  <font>
+                   <pointsize>8</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>指定点号、东、北坐标在文档中的列数，如：1,3,4</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="load_measured_btn">
+                 <property name="text">
+                  <string>加载实测数据</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="load_design_points_btn">
+                 <property name="text">
+                  <string>加载设计数据</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QGroupBox" name="match_points_group">
+          <property name="title">
+           <string>4、匹配点位</string>
+          </property>
+          <layout class="QGridLayout" name="match_points_layout">
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="match_filter_layout">
+             <item>
+              <widget class="QLabel" name="filter_label">
+               <property name="text">
+                <string>过滤条件：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="order_radio">
+               <property name="text">
+                <string>顺序</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="point_number_radio">
+               <property name="text">
+                <string>点位号</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="distance_radio">
+               <property name="text">
+                <string>距离</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="distance_threshold_label">
+               <property name="text">
+                <string>距离阈值（mm）：</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="distance_threshold"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="match_points_btn">
+               <property name="text">
+                <string>匹配点位</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QGroupBox" name="draw_export_group">
+          <property name="title">
+           <string>5、绘制偏差及数据导出</string>
+          </property>
+          <layout class="QGridLayout" name="draw_export_layout">
+           <item row="0" column="0">
+            <layout class="QGridLayout" name="draw_export_btn_layout">
+             <item row="0" column="2">
+              <widget class="QPushButton" name="statistics_btn">
+               <property name="text">
+                <string>偏差数据统计</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QPushButton" name="export_statistics_btn">
+               <property name="text">
+                <string>导出统计数据</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="draw_deviation_btn">
+               <property name="text">
+                <string>绘制偏差数据</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QPushButton" name="calculate_deviation_btn">
+               <property name="text">
+                <string>计算偏差</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QFrame" name="frame_2">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_16">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_15">
+          <item row="1" column="0">
+           <widget class="QGroupBox" name="preview_group">
+            <property name="title">
+             <string>7、偏差可视化预览</string>
+            </property>
+            <layout class="QGridLayout" name="preview_layout">
+             <item row="0" column="0">
+              <widget class="QGraphicsView" name="preview_view">
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>100</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QGroupBox" name="log_group">
+            <property name="title">
+             <string>8、操作日志</string>
+            </property>
+            <layout class="QGridLayout" name="log_layout">
+             <item row="0" column="0">
+              <widget class="QTextEdit" name="log_text">
+               <property name="font">
+                <font>
+                 <pointsize>7</pointsize>
+                </font>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QGroupBox" name="style_settings_group">
+            <property name="title">
+             <string>6、可视化样式设置</string>
+            </property>
+            <layout class="QGridLayout" name="style_settings_layout">
+             <item row="1" column="0">
+              <layout class="QGridLayout" name="style_params_layout">
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="style_params_h_layout">
+                 <item>
+                  <layout class="QVBoxLayout" name="style_params_left_layout">
+                   <item>
+                    <layout class="QHBoxLayout" name="axis_scale_layout">
+                     <item>
+                      <widget class="QLabel" name="axis_scale_label">
+                       <property name="text">
+                        <string>坐标轴长度比例：</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="axis_scale_edit"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="arrow_scale_layout">
+                     <item>
+                      <widget class="QLabel" name="label">
+                       <property name="text">
+                        <string>角度文本比例：</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="angle_text_scale_edit"/>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="style_params_right_layout">
+                   <item>
+                    <layout class="QHBoxLayout" name="main_text_scale_layout">
+                     <item>
+                      <widget class="QLabel" name="main_text_scale_label">
+                       <property name="text">
+                        <string>主文本大小比例：</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="main_text_scale_edit"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="axis_label_scale_layout">
+                     <item>
+                      <widget class="QLabel" name="axis_label_scale_label">
+                       <property name="text">
+                        <string>坐标轴标签比例：</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="axis_label_scale_edit"/>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="text_offset_scale_layout"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0">
+                <layout class="QHBoxLayout" name="style_btn_layout">
+                 <item>
+                  <widget class="QLabel" name="label_4">
+                   <property name="text">
+                    <string>箭头大小：</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="arrow_scale_edit"/>
+                 </item>
+                 <item>
+                  <spacer name="style_btn_spacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="reset_style_btn">
+                   <property name="text">
+                    <string>重置为默认值</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="apply_style_btn">
+                   <property name="text">
+                    <string>应用样式设置</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="style_hint_label">
+               <property name="text">
+                <string>以下参数使用与桩基圆圈直径的相对比例进行设置，更直观。</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>936</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
